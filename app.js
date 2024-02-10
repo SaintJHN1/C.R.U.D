@@ -49,15 +49,17 @@ app.post('/user', async (req, res) => {
 app.put('/user/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const user = await User.findByIdAndUpdate(id);
+        const user = await User.findByIdAndUpdate(id, req.body, { new: true }); // Update with req.body and return the updated document
         if (!user) {
-            returnres.status(404).json({ message: `cannot find any user with ID ${id}` })
+            return res.status(404).json({ message: `Cannot find any user with ID ${id}` });
         }
-        res.status(200).json(User);
+        res.status(200).json(user); // Send the updated user object
     } catch (error) {
-        res.status(500).json({ message: error.message })
+        res.status(500).json({ message: error.message }); // Send specific error message
     }
-})
+});
+
+
 app.delete('/user/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -70,19 +72,6 @@ app.delete('/user/:id', async (req, res) => {
         res.status(500).json({ message: error.message })
     }
 })
-app.patch('/user/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const product = await User.findByIdAndUpdate(id);
-        if (!product) {
-            return res.status(404).json({ message: `cannot find any user with ID ${id}` })
-        }
-        res.status(200).json(user);
-    } catch (error) {
-        res.status(500).json({ message: error.message })
-    }
-})
-
 
 mongoose.set("strictQuery", false)
 mongoose.connect('mongodb://localhost:27017')
